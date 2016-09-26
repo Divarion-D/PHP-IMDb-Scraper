@@ -64,10 +64,10 @@ class Imdb
 		$arr['tagline'] = trim(strip_tags($this->match('/Tagline:<\/h5>.*?<div class="info-content">(.*?)(<a|<\/div)/ms', $html, 1)));
 		$arr['plot'] = trim(strip_tags($this->match('/Plot:<\/h5>.*?<div class="info-content">(.*?)(<a|<\/div|\|)/ms', $html, 1)));
 		$arr['plot_keywords'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Plot Keywords:<\/h5>.*?<div class="info-content">(.*?)<\/div/ms', $html, 1), 1);
-		$arr['poster'] = $this->match('/<div class="photo">.*?<a name="poster".*?><img.*?src="(.*?)".*?<\/div>/ms', $html, 1);
+		$arr['poster'] = $this->match('/<div class="photo">.*?<a .*?><img.*?src="(.*?)".*?<\/div>/ms', $html, 1);
 		$arr['poster_large'] = "";
 		$arr['poster_full'] = "";
-		if ($arr['poster'] != '' && strpos($arr['poster'], "media-imdb.com") > 0) { //Get large and small posters
+		if ($arr['poster'] != '' && strpos($arr['poster'], "images-na.ssl-images-amazon.com") > 0) { //Get large and small posters
 			$arr['poster'] = preg_replace('/_V1.*?.jpg/ms', "_V1._SY200.jpg", $arr['poster']);
 			$arr['poster_large'] = preg_replace('/_V1.*?.jpg/ms', "_V1._SY500.jpg", $arr['poster']);
 			$arr['poster_full'] = preg_replace('/_V1.*?.jpg/ms', "_V1._SY0.jpg", $arr['poster']);
