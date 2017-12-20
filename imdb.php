@@ -37,8 +37,8 @@ class Imdb
 	private function scrapeMovieInfo($imdbUrl, $getExtraInfo = true)
 	{
 		$arr = array();
-		$html = $this->geturl("${imdbUrl}combined");
-		$title_id = $this->match('/<link rel="canonical" href="http:\/\/www.imdb.com\/title\/(tt\d+)\/combined" \/>/ms', $html, 1);
+		$html = $this->geturl("${imdbUrl}reference");
+		$title_id = $this->match('/<link rel="canonical" href="http:\/\/www.imdb.com\/title\/(tt\d+)\/reference" \/>/ms', $html, 1);
 		if(empty($title_id) || !preg_match("/tt\d+/i", $title_id)) {
 			$arr['error'] = "No Title found on IMDb!";
 			return $arr;
