@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    environment:
+     - ENVIRONMENT=docker
+     - PHP_DEBUGGER=xdebug
+     - XDEBUG_REMOTE_PORT=9000
+     - XDEBUG_REMOTE_AUTOSTART=0
+     - XDEBUG_REMOTE_CONNECT_BACK=0
+     - php.memory_limit=64M
+     - FPM_PM_MAX_CHILDREN=8
+     - FPM_PM_START_SERVERS=8
+     - FPM_PM_MIN_SPARE_SERVERS=7
+     - FPM_PM_MAX_SPARE_SERVERS=8
+    image: webdevops/php-nginx-dev:7.1
+    ports:
+     - "80:80"
+    volumes:
+     - ".:/app"
