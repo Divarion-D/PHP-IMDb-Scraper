@@ -48,23 +48,23 @@ class Imdb
 		$arr['title'] = str_replace('"', '', trim($this->match('/<title>(IMDb \- )*(.*?) \(.*?<\/title>/ms', $html, 2)));
 		$arr['original_title'] = trim($this->match('/class="title-extra">(.*?)</ms', $html, 1));
 		$arr['year'] = trim($this->match('/<title>.*?\(.*?(\d{4}).*?\).*?<\/title>/ms', $html, 1));
-		$arr['rating'] = $this->match('/<b>(\d.\d)\/10<\/b>/ms', $html, 1);
-		$arr['genres'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Genre.?:(.*?)(<\/div>|See more)/ms', $html, 1), 1);
+		$arr['rating'] = $this->match('/<\/svg>.*?<\/span>.*?<span class="ipl-rating-star__rating">(\d.\d)<\/span>/ms', $html, 1);
+		$arr['genres'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Genres<\/td>.*?<td>(.*?)<\/td>/ms', $html, 1), 1);
 		$arr['directors'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Directed by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['writers'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Writing credits<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
-		$arr['cast'] = $this->match_all_key_value('/<td class="nm"><a.*?href="\/name\/(.*?)\/".*?>(.*?)<\/a>/ms', $this->match('/<h3>Cast<\/h3>(.*?)<\/table>/ms', $html, 1));
+		$arr['cast'] = $this->match_all_key_value('/itemprop="name">(.*?)<.*?<td class="character">.*?<div>(.*?)<\/div>/ms', $this->match('/<table class="cast_list">(.*?)<\/table>/ms', $html, 1));
 		$arr['cast'] = array_slice($arr['cast'], 0, 30);
 		$arr['stars'] = array_slice($arr['cast'], 0, 5);
 		$arr['producers'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Produced by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['musicians'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Original Music by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['cinematographers'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Cinematography by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['editors'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Film Editing by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
-		$arr['mpaa_rating'] = $this->match('/MPAA<\/a>:<\/h5><div class="info-content">Rated (G|PG|PG-13|PG-14|R|NC-17|X) /ms', $html, 1);
-		$arr['release_date'] = $this->match('/Release Date:<\/h5>.*?<div class="info-content">.*?([0-9][0-9]? (January|February|March|April|May|June|July|August|September|October|November|December) (19|20)[0-9][0-9])/ms', $html, 1);
+		$arr['mpaa_rating'] = $this->match('/<a href="\/preferences\/general" class=>Change View<\/a>.*?<\/span>.*?<hr>.*?<ul class="ipl-inline-list">.*?<li class="ipl-inline-list__item">.*?(G|PG-13|PG-14|PG|R|NC-17|X).*?<\/li>/ms', $html, 1);
+		$arr['release_date'] = $this->match('/releaseinfo">([0-9][0-9]? ([a-zA-Z]*) (19|20)[0-9][0-9])/ms', $html, 1);
 		$arr['tagline'] = trim(strip_tags($this->match('/Tagline:<\/h5>.*?<div class="info-content">(.*?)(<a|<\/div)/ms', $html, 1)));
 		$arr['plot'] = trim(strip_tags($this->match('/Plot:<\/h5>.*?<div class="info-content">(.*?)(<a|<\/div|\|)/ms', $html, 1)));
 		$arr['plot_keywords'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Plot Keywords:<\/h5>.*?<div class="info-content">(.*?)<\/div/ms', $html, 1), 1);
-		$arr['poster'] = $this->match('/<div class="photo">.*?<a .*?><img.*?src="(.*?)".*?<\/div>/ms', $html, 1);
+		$arr['poster'] = $this->match('/class="poster".*?src="(.*?)".*? \/>/ms', $html, 1);
 		$arr['poster_large'] = "";
 		$arr['poster_full'] = "";
 		if ($arr['poster'] != '' && strpos($arr['poster'], "images-na.ssl-images-amazon.com") > 0) { //Get large and small posters
@@ -74,7 +74,7 @@ class Imdb
 		} else {
 			$arr['poster'] = "";
 		}
-		$arr['runtime'] = trim($this->match('/Runtime:<\/h5><div class="info-content">.*?(\d+) min.*?<\/div>/ms', $html, 1));
+		$arr['runtime'] = trim($this->match('/Runtime<\/td>.*?(\d+) min.*?<\/li>/ms', $html, 1));
 		$arr['top_250'] = trim($this->match('/Top 250: #(\d+)</ms', $html, 1));
 		$arr['oscars'] = trim($this->match('/Won (\d+) Oscars?\./ms', $html, 1));
 		if(empty($arr['oscars']) && preg_match("/Won Oscar\./i", $html)) $arr['oscars'] = "1";
@@ -86,7 +86,7 @@ class Imdb
         
 		if($getExtraInfo == true) {
 			$plotPageHtml = $this->geturl("${imdbUrl}plotsummary");
-			$arr['storyline'] = trim(strip_tags($this->match('/<li class="odd">.*?<p>(.*?)(<|<\/p>)/ms', $plotPageHtml, 1)));
+			$arr['storyline'] = trim(strip_tags($this->match('/id="summary.*?">.*?<p>(.*?)(<|<\/p>)/ms', $plotPageHtml, 1)));
 			$releaseinfoHtml = $this->geturl("http://www.imdb.com/title/" . $arr['title_id'] . "/releaseinfo");
 			$arr['also_known_as'] = $this->getAkaTitles($releaseinfoHtml);
 			$arr['release_dates'] = $this->getReleaseDates($releaseinfoHtml);
@@ -222,7 +222,7 @@ class Imdb
 		$arr = array();
 		preg_match_all($regex, $str, $matches, PREG_SET_ORDER);
 		foreach($matches as $m){
-			$arr[$m[$keyIndex]] = $m[$valueIndex];
+			$arr[$m[$keyIndex]] = trim($m[$valueIndex]);
 		}
 		return $arr;
 	}
