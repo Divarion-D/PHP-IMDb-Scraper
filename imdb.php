@@ -80,7 +80,7 @@ class Imdb
 		if(empty($arr['oscars']) && preg_match("/Won Oscar\./i", $html)) $arr['oscars'] = "1";
 		$arr['awards'] = trim($this->match('/(\d+) wins/ms',$html, 1));
 		$arr['nominations'] = trim($this->match('/(\d+) nominations/ms',$html, 1));
-		$arr['votes'] = $this->match('/>([0-9,]*) votes</ms', $html, 1);
+		$arr['votes'] = $this->match('/<span class="ipl-rating-star__total-votes">\((.*?)\)<\/span>/ms', $html, 1);
 		$arr['language'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Language.?:(.*?)(<\/div>|>.?and )/ms', $html, 1), 1);
         	$arr['country'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Country:(.*?)(<\/div>|>.?and )/ms', $html, 1), 1);
         
