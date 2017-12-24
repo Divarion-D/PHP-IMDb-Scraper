@@ -48,7 +48,7 @@ class Imdb
 		$arr['title'] = str_replace('"', '', trim($this->match('/<title>(IMDb \- )*(.*?) \(.*?<\/title>/ms', $html, 2)));
 		$arr['original_title'] = trim($this->match('/class="title-extra">(.*?)</ms', $html, 1));
 		$arr['year'] = trim($this->match('/<title>.*?\(.*?(\d{4}).*?\).*?<\/title>/ms', $html, 1));
-		$arr['rating'] = $this->match('/<\/svg>.*?<\/span>.*?<span class="ipl-rating-star__rating">(\d.\d)<\/span>/ms', $html, 1);
+		$arr['rating'] = $this->match('/<\/svg>.*?<\/span>.*?<span class="ipl-rating-star__rating">(.*?)<\/span>/ms', $html, 1);
 		$arr['genres'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Genres<\/td>.*?<td>(.*?)<\/td>/ms', $html, 1), 1);
 		$arr['directors'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Directed by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['writers'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Writing credits<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
