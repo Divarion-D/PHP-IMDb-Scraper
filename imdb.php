@@ -87,6 +87,9 @@ class Imdb
 		if($getExtraInfo == true) {
 			$plotPageHtml = $this->geturl("${imdbUrl}plotsummary");
 			$arr['storyline'] = trim(strip_tags($this->match('/id="summary.*?">.*?<p>(.*?)(<|<\/p>)/ms', $plotPageHtml, 1)));
+			if(empty($arr['plot'])) {
+                $arr['plot'] = $arr['storyline'];
+            }
 			$releaseinfoHtml = $this->geturl("http://www.imdb.com/title/" . $arr['title_id'] . "/releaseinfo");
 			$arr['also_known_as'] = $this->getAkaTitles($releaseinfoHtml);
 			$arr['release_dates'] = $this->getReleaseDates($releaseinfoHtml);
