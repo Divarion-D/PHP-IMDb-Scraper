@@ -64,7 +64,7 @@ class Imdb
 		$arr['tagline'] = trim(strip_tags($this->match('/Tagline:<\/h5>.*?<div class="info-content">(.*?)(<a|<\/div)/ms', $html, 1)));
 		$arr['plot'] = trim(strip_tags($this->match('/Plot:<\/h5>.*?<div class="info-content">(.*?)(<a|<\/div|\|)/ms', $html, 1)));
 		$arr['plot_keywords'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Plot Keywords:<\/h5>.*?<div class="info-content">(.*?)<\/div/ms', $html, 1), 1);
-		$arr['poster'] = $this->match('/class="poster".*?src="(.*?)".*? \/>/ms', $html, 1);
+		$arr['poster'] = $this->match('/class="titlereference-primary-image".*?src="(.*?)".*? \/>/ms', $html, 1);
 		$arr['poster_large'] = "";
 		$arr['poster_full'] = "";
 		if ($arr['poster'] != '' && strpos($arr['poster'], "images-na.ssl-images-amazon.com") > 0) { //Get large and small posters
