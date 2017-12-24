@@ -61,9 +61,9 @@ class Imdb
 		$arr['editors'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Film Editing by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['mpaa_rating'] = $this->match('/<a href="\/preferences\/general" class=>Change View<\/a>.*?<\/span>.*?<hr>.*?<ul class="ipl-inline-list">.*?<li class="ipl-inline-list__item">.*?(G|PG-13|PG-14|PG|R|NC-17|X).*?<\/li>/ms', $html, 1);
 		$arr['release_date'] = $this->match('/releaseinfo">([0-9][0-9]? ([a-zA-Z]*) (19|20)[0-9][0-9])/ms', $html, 1);
-		$arr['tagline'] = trim(strip_tags($this->match('/Tagline:<\/h5>.*?<div class="info-content">(.*?)(<a|<\/div)/ms', $html, 1)));
-		$arr['plot'] = trim(strip_tags($this->match('/Plot:<\/h5>.*?<div class="info-content">(.*?)(<a|<\/div|\|)/ms', $html, 1)));
-		$arr['plot_keywords'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Plot Keywords:<\/h5>.*?<div class="info-content">(.*?)<\/div/ms', $html, 1), 1);
+		$arr['tagline'] = trim(strip_tags($this->match('/Taglines<\/td>.*?<td>(.*?)</ms', $html, 1)));
+		$arr['plot'] = trim(strip_tags($this->match('/Plot Summary<\/td>.*?<td>.*?<p>(.*?)</ms', $html, 1)));
+		$arr['plot_keywords'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Plot Keywords<\/td>.*?<td>.*?<ul class="ipl-inline-list">(.*?)<\/ul>/ms', $html, 1), 1);
 		$arr['poster'] = $this->match('/class="titlereference-primary-image".*?src="(.*?)".*? \/>/ms', $html, 1);
 		$arr['poster_large'] = "";
 		$arr['poster_full'] = "";
