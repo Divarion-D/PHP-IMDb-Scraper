@@ -54,7 +54,7 @@ class Imdb
 		$arr['writers'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Writing credits<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['cast'] = $this->match_all_key_value('/itemprop="name">(.*?)<.*?<td class="character">.*?<div>(.*?)<\/div>/ms', $this->match('/<table class="cast_list">(.*?)<\/table>/ms', $html, 1));
 		$arr['cast'] = array_slice($arr['cast'], 0, 30);
-		$arr['stars'] = array_slice($arr['cast'], 0, 5);
+		$arr['stars'] = $this->match_all('/<a href="\/name.*?>(.*?)<\/a>/ms', $this->match('/Stars:(.*?)<\/ul>/ms', $html, 1), 1);
 		$arr['producers'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Produced by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['musicians'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Original Music by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
 		$arr['cinematographers'] = $this->match_all_key_value('/<td valign="top"><a.*?href="\/name\/(.*?)\/">(.*?)<\/a>/ms', $this->match('/Cinematography by<\/a><\/h5>(.*?)<\/table>/ms', $html, 1));
