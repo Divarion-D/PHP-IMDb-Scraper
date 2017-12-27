@@ -24,11 +24,20 @@ class Imdb
 		}
 		return $this->getMovieInfoById($imdbId, $getExtraInfo);
 	}
-	
+
+    // Get movie information by IMDb url.
+    public function getMovieInfoByURL($url, $getExtraInfo = true)
+    {
+        $cleanedUrl = preg_replace('/(\?.*)/ms','', $url);
+        if(!$this->endsWith($cleanedUrl, '/')) {
+            $cleanedUrl .= '/';
+        }
+        return $this->scrapeMovieInfo($cleanedUrl, $getExtraInfo);
+    }
+
 	// Get movie information by IMDb Id.
 	public function getMovieInfoById($imdbId, $getExtraInfo = true)
 	{
-		$arr = array();
 		$imdbUrl = "http://www.imdb.com/title/" . trim($imdbId) . "/";
 		return $this->scrapeMovieInfo($imdbUrl, $getExtraInfo);
 	}
@@ -243,5 +252,13 @@ class Imdb
 		else
 			return false;
 	}
+
+	private function endsWith($haystack, $needle)
+    {
+        $length = strlen($needle);
+
+        return $length === 0 ||
+            (substr($haystack, -$length) === $needle);
+    }
 }
 ?>

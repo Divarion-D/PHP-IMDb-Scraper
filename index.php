@@ -5,6 +5,7 @@ require_once("imdb.php");
 if(isset($_GET["moviename"]) | isset($_GET["movieid"])) {
 	$movieName = $_GET["moviename"];
 	$movieId = $_GET["movieid"];
+    $movieUrl = $_GET["movieurl"];
 	$output = strtolower($_GET["output"]);
 
 	$i = new Imdb();
@@ -13,6 +14,8 @@ if(isset($_GET["moviename"]) | isset($_GET["movieid"])) {
 		$mArr = array_change_key_case($i->getMovieInfoById($movieId), CASE_UPPER);
 	} else if($movieName !== '') {
 		$mArr = array_change_key_case($i->getMovieInfo($movieName), CASE_UPPER);
+    } else if($movieUrl !== '') {
+        $mArr = array_change_key_case($i->getMovieInfoByURL($movieUrl), CASE_UPPER);
 	} else {
 		echo 'Please give either a moviename or movieid';
 	}
@@ -125,6 +128,10 @@ if(isset($_GET["moviename"]) | isset($_GET["movieid"])) {
 					<label for="moviename">Or Movie Name:</label>
 					<input type="text" placeholder="i.e. The Avengers" name="moviename" id="moviename"/>
 				</div>
+                <div class="formline">
+                    <label for="movieurl">Or Movie URL:</label>
+                    <input type="text" placeholder="i.e. http://www.imdb.com/title/tt0848228/" name="movieurl" id="movieurl"/>
+                </div>
 				<div class="formline">
 					<label for="output">Output format:</label>
 					<select id="output" name="output">
