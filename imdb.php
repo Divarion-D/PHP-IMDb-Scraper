@@ -35,7 +35,7 @@ class Imdb
 	
 	// Scrape movie information from IMDb page and return results in an array.
 	private function scrapeMovieInfo($imdbUrl, $getExtraInfo = true)
-	{   $nameExtractor = '/<a href="\/name.*?>(.*?)<\/a>/ms';
+	{   $nameExtractor = '/<a.*?href="\/name\/(.*?)["|\/].*?>(.*?)<\/a>/ms';
 		$arr = array();
 		$html = $this->geturl("${imdbUrl}reference");
 		$title_id = $this->match('/<link rel="canonical" href="http:\/\/www.imdb.com\/title\/(tt\d+)\/reference" \/>/ms', $html, 1);
@@ -50,15 +50,15 @@ class Imdb
 		$arr['year'] = trim($this->match('/<title>.*?\(.*?(\d{4}).*?\).*?<\/title>/ms', $html, 1));
 		$arr['rating'] = $this->match('/<\/svg>.*?<\/span>.*?<span class="ipl-rating-star__rating">(.*?)<\/span>/ms', $html, 1);
 		$arr['genres'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Genres<\/td>.*?<td>(.*?)<\/td>/ms', $html, 1), 1);
-		$arr['directors'] = $this->match_all($nameExtractor, $this->match('/Directed by.*?<table(.*?)<\/table>/ms', $html, 1),1);
-		$arr['writers'] = $this->match_all($nameExtractor, $this->match('/Writers:.*?<ul(.*?)<\/ul>/ms', $html, 1), 1);
+		$arr['directors'] = $this->match_all_key_value($nameExtractor, $this->match('/Directed by.*?<table(.*?)<\/table>/ms', $html, 1));
+		$arr['writers'] = $this->match_all_key_value($nameExtractor, $this->match('/Writers:.*?<ul(.*?)<\/ul>/ms', $html, 1));
 		$arr['cast'] = $this->match_all_key_value('/itemprop="name">(.*?)<.*?<td class="character">.*?<div>(.*?)<\/div>/ms', $this->match('/<table class="cast_list">(.*?)<\/table>/ms', $html, 1));
 		$arr['cast'] = array_slice($arr['cast'], 0, 30);
-		$arr['stars'] = $this->match_all($nameExtractor, $this->match('/Stars:(.*?)<\/ul>/ms', $html, 1), 1);
-		$arr['producers'] = $this->match_all($nameExtractor, $this->match('/Produced by.*?<table(.*?)<\/table>/ms', $html, 1), 1);
-		$arr['musicians'] = $this->match_all($nameExtractor, $this->match('/Music by.*?<table(.*?)<\/table>/ms', $html, 1), 1);
-		$arr['cinematographers'] = $this->match_all($nameExtractor, $this->match('/Cinematography by.*?<table(.*?)<\/table>/ms', $html, 1), 1);
-		$arr['editors'] = $this->match_all($nameExtractor, $this->match('/Film Editing by.*?<table(.*?)<\/table>/ms', $html, 1), 1);
+		$arr['stars'] = $this->match_all_key_value($nameExtractor, $this->match('/Stars:(.*?)<\/ul>/ms', $html, 1));
+		$arr['producers'] = $this->match_all_key_value($nameExtractor, $this->match('/Produced by.*?<table(.*?)<\/table>/ms', $html, 1));
+		$arr['musicians'] = $this->match_all_key_value($nameExtractor, $this->match('/Music by.*?<table(.*?)<\/table>/ms', $html, 1));
+		$arr['cinematographers'] = $this->match_all_key_value($nameExtractor, $this->match('/Cinematography by.*?<table(.*?)<\/table>/ms', $html, 1));
+		$arr['editors'] = $this->match_all_key_value($nameExtractor, $this->match('/Film Editing by.*?<table(.*?)<\/table>/ms', $html, 1));
 		$arr['mpaa_rating'] = $this->match('/<a href="\/preferences\/general" class=>Change View<\/a>.*?<\/span>.*?<hr>.*?<ul class="ipl-inline-list">.*?<li class="ipl-inline-list__item">.*?(G|PG-13|PG-14|PG|R|NC-17|X).*?<\/li>/ms', $html, 1);
 		$arr['release_date'] = $this->match('/releaseinfo">([0-9][0-9]? ([a-zA-Z]*) (19|20)[0-9][0-9])/ms', $html, 1);
 		$arr['tagline'] = trim(strip_tags($this->match('/Taglines<\/td>.*?<td>(.*?)</ms', $html, 1)));
