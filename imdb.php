@@ -90,8 +90,8 @@ class Imdb
 		$arr['awards'] = trim($this->match('/(\d+) wins/ms',$html, 1));
 		$arr['nominations'] = trim($this->match('/(\d+) nominations/ms',$html, 1));
 		$arr['votes'] = $this->match('/<span class="ipl-rating-star__total-votes">\((.*?)\)<\/span>/ms', $html, 1);
-		$arr['language'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Language.?:(.*?)(<\/div>|>.?and )/ms', $html, 1), 1);
-        	$arr['country'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Country:(.*?)(<\/div>|>.?and )/ms', $html, 1), 1);
+		$arr['language'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Language<\/td>(.*?)<\/td>/ms', $html, 1), 1);
+        	$arr['country'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Country<\/td>(.*?)<\/td>/ms', $html, 1), 1);
         
 		if($getExtraInfo == true) {
 			$plotPageHtml = $this->geturl("${imdbUrl}plotsummary");
@@ -173,7 +173,7 @@ class Imdb
 	public function getVideos($titleId){
 		$html = $this->geturl("http://www.imdb.com/title/${titleId}/videogallery");
 		$videos = array();
-		foreach ($this->match_all('/<a.*?href="(\/video\/imdb\/.*?)".*?>.*?<\/a>/ms', $html, 1) as $v) {
+		foreach ($this->match_all('/<a.*?href="(\/videoplayer\/vi\d*?)".*?>.*?<\/a>/ms', $html, 1) as $v) {
 			$videos[] = "http://www.imdb.com${v}";
 		}
 		return array_filter($videos);
