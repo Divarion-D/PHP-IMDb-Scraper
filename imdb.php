@@ -59,12 +59,12 @@ class Imdb
 		$arr['year'] = trim($this->match('/<title>.*?\(.*?(\d{4}).*?\).*?<\/title>/ms', $html, 1));
 		$arr['rating'] = $this->match('/<\/svg>.*?<\/span>.*?<span class="ipl-rating-star__rating">(.*?)<\/span>/ms', $html, 1);
 		$arr['genres'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Genres<\/td>.*?<td>(.*?)<\/td>/ms', $html, 1), 1);
-		$arr['directors'] = $this->match_all_key_value($nameExtractor, $this->match('/Directed by.*?<table(.*?)<\/table>/ms', $html, 1));
+		$arr['directors'] = $this->match_all_key_value($nameExtractor, $this->match('/<h4 name="directors" id="directors" class="ipl-header__content ipl-list-title">.*?Directed by.*?<table(.*?)<\/table>/ms', $html, 1));
 		$arr['writers'] = $this->match_all_key_value($nameExtractor, $this->match('/Writers:.*?<ul(.*?)<\/ul>/ms', $html, 1));
 		$arr['cast'] = $this->match_all_key_value('/itemprop="name">(.*?)<.*?<td class="character">.*?<div>(.*?)<\/div>/ms', $this->match('/<table class="cast_list">(.*?)<\/table>/ms', $html, 1));
 		$arr['cast'] = array_slice($arr['cast'], 0, 30);
 		$arr['stars'] = $this->match_all_key_value($nameExtractor, $this->match('/Stars:(.*?)<\/ul>/ms', $html, 1));
-		$arr['producers'] = $this->match_all_key_value($nameExtractor, $this->match('/Produced by.*?<table(.*?)<\/table>/ms', $html, 1));
+		$arr['producers'] = $this->match_all_key_value($nameExtractor, $this->match('/<h4 name="producers" id="producers" class="ipl-header__content ipl-list-title">.*?Produced by.*?<table(.*?)<\/table>/ms', $html, 1));
 		$arr['musicians'] = $this->match_all_key_value($nameExtractor, $this->match('/Music by.*?<table(.*?)<\/table>/ms', $html, 1));
 		$arr['cinematographers'] = $this->match_all_key_value($nameExtractor, $this->match('/Cinematography by.*?<table(.*?)<\/table>/ms', $html, 1));
 		$arr['editors'] = $this->match_all_key_value($nameExtractor, $this->match('/Film Editing by.*?<table(.*?)<\/table>/ms', $html, 1));
