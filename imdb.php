@@ -38,7 +38,7 @@ class Imdb
 	// Get movie information by IMDb Id.
 	public function getMovieInfoById($imdbId, $getExtraInfo = true)
 	{
-		$imdbUrl = "http://www.imdb.com/title/" . trim($imdbId) . "/";
+		$imdbUrl = "https://www.imdb.com/title/" . trim($imdbId) . "/";
 		return $this->scrapeMovieInfo($imdbUrl, $getExtraInfo);
 	}
 	
