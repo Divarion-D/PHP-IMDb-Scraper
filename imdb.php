@@ -47,7 +47,7 @@ class Imdb
 	{   $nameExtractor = '/<a.*?href="\/name\/(.*?)["|\/].*?>(.*?)<\/a>/ms';
 		$arr = array();
 		$html = $this->geturl("${imdbUrl}reference");
-		$title_id = $this->match('/<link rel="canonical" href="http:\/\/www.imdb.com\/title\/(tt\d+)\/reference" \/>/ms', $html, 1);
+		$title_id = $this->match('/<link rel="canonical" href="https?:\/\/www.imdb.com\/title\/(tt\d+)\/reference" \/>/ms', $html, 1);
 		if(empty($title_id) || !preg_match("/tt\d+/i", $title_id)) {
 			$arr['error'] = "No Title found on IMDb!";
 			return $arr;
@@ -99,7 +99,7 @@ class Imdb
 			if(empty($arr['plot'])) {
                 $arr['plot'] = $arr['storyline'];
             }
-			$releaseinfoHtml = $this->geturl("http://www.imdb.com/title/" . $arr['title_id'] . "/releaseinfo");
+			$releaseinfoHtml = $this->geturl("https://www.imdb.com/title/" . $arr['title_id'] . "/releaseinfo");
 			$arr['also_known_as'] = $this->getAkaTitles($releaseinfoHtml);
 			$arr['release_dates'] = $this->getReleaseDates($releaseinfoHtml);
 			$arr['recommended_titles'] = $this->getRecommendedTitles($arr['title_id']);
@@ -135,7 +135,7 @@ class Imdb
 
 	// Collect all Media Images.
 	private function getMediaImages($titleId){
-		$url  = "http://www.imdb.com/title/" . $titleId . "/mediaindex";
+		$url  = "https://www.imdb.com/title/" . $titleId . "/mediaindex";
 		$html = $this->geturl($url);
 		$media = array();
 		$media = array_merge($media, $this->scanMediaImages($html));
@@ -157,7 +157,7 @@ class Imdb
 	
 	// Get recommended titles by IMDb title id.
 	public function getRecommendedTitles($titleId){
-		$json = $this->geturl("http://www.imdb.com/widget/recommendations/_ajax/get_more_recs?specs=p13nsims%3A${titleId}");
+		$json = $this->geturl("https://www.imdb.com/widget/recommendations/_ajax/get_more_recs?specs=p13nsims%3A${titleId}");
 		$resp = json_decode($json, true);
 		$arr = array();
 		if(isset($resp["recommendations"])) {
@@ -171,17 +171,17 @@ class Imdb
 	
 	// Get all Videos and Trailers
 	public function getVideos($titleId){
-		$html = $this->geturl("http://www.imdb.com/title/${titleId}/videogallery");
+		$html = $this->geturl("https://www.imdb.com/title/${titleId}/videogallery");
 		$videos = array();
 		foreach ($this->match_all('/<a.*?href="(\/videoplayer\/vi\d*?)".*?>.*?<\/a>/ms', $html, 1) as $v) {
-			$videos[] = "http://www.imdb.com${v}";
+			$videos[] = "https://www.imdb.com${v}";
 		}
 		return array_filter($videos);
 	}
 	
 	// Get Top 250 Movie List
 	public function getTop250(){
-		$html = $this->geturl("http://www.imdb.com/chart/top");
+		$html = $this->geturl("https://www.imdb.com/chart/top");
 		$top250 = array();
 		$rank = 1;
 		foreach ($this->match_all('/<tr class="(even|odd)">(.*?)<\/tr>/ms', $html, 2) as $m) {
@@ -191,7 +191,7 @@ class Imdb
 			$rating = $this->match('/<td class="ratingColumn"><strong.*?>(.*?)<\/strong>/msi', $m, 1);
 			$poster = $this->match('/<td class="posterColumn">.*?<img src="(.*?)"/msi', $m, 1);
 			$poster = preg_replace('/_V1.*?.jpg/ms', "_V1._SY200.jpg", $poster);
-			$url = "http://www.imdb.com/title/${id}/";
+			$url = "https://www.imdb.com/title/${id}/";
 			$top250[] = array("id"=>$id, "rank"=>$rank, "title"=>$title, "year"=>$year, "rating"=>$rating, "poster"=>$poster, "url"=>$url);
 			$rank++;
 		}
@@ -209,8 +209,8 @@ class Imdb
 			case FALSE:     return NULL;
 			default:        return NULL;
 		}
-		$url = "http://www.${engine}.com/search?q=imdb+" . rawurlencode($title);
-		$ids = $this->match_all('/<a.*?href="http:\/\/www.imdb.com\/title\/(tt\d+).*?".*?>.*?<\/a>/ms', $this->geturl($url), 1);
+		$url = "https://www.${engine}.com/search?q=imdb+" . rawurlencode($title);
+		$ids = $this->match_all('/<a.*?href="https?:\/\/www.imdb.com\/title\/(tt\d+).*?".*?>.*?<\/a>/ms', $this->geturl($url), 1);
 		if (!isset($ids[0]) || empty($ids[0])) //if search failed
 			return $this->getIMDbIdFromSearch($title, $nextEngine); //move to next search engine
 		else
