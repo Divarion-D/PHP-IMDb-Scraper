@@ -76,7 +76,7 @@ class Imdb
 		$arr['poster'] = $this->match('/class="titlereference-primary-image".*?src="(.*?)".*? \/>/ms', $html, 1);
 		$arr['poster_large'] = "";
 		$arr['poster_full'] = "";
-		if ($arr['poster'] != '' && strpos($arr['poster'], "ia.media-imdb.com") > 0) { //Get large and small posters
+		if ($arr['poster'] != '' && strpos($arr['poster'], "m.media-amazon.com") > 0) { //Get large and small posters
 			$arr['poster'] = preg_replace('/_V1.*?.jpg/ms', "_V1._SY200.jpg", $arr['poster']);
 			$arr['poster_large'] = preg_replace('/_V1.*?.jpg/ms', "_V1._SY500.jpg", $arr['poster']);
 			$arr['poster_full'] = preg_replace('/_V1.*?.jpg/ms', "_V1._SY0.jpg", $arr['poster']);
