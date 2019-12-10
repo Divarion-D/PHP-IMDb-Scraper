@@ -54,8 +54,8 @@ class Imdb
 		}
 		$arr['title_id'] = $title_id;
 		$arr['imdb_url'] = $imdbUrl;
-		$arr['title'] = str_replace('"', '', trim($this->match('/<title>(IMDb \- )*(.*?) \(.*?<\/title>/ms', $html, 2)));
-		$arr['original_title'] = trim($this->match('/class="title-extra">(.*?)</ms', $html, 1));
+		$arr['title'] = trim($this->match('/<meta name="title" content="(.*?)\(/ms', $html, 1));
+		$arr['original_title'] = trim($this->match('/<meta property=\'og:title\' content="(.*?)\(/ms', $html, 1));
 		$arr['year'] = trim($this->match('/<title>.*?\(.*?(\d{4}).*?\).*?<\/title>/ms', $html, 1));
 		$arr['rating'] = $this->match('/<\/svg>.*?<\/span>.*?<span class="ipl-rating-star__rating">(.*?)<\/span>/ms', $html, 1);
 		$arr['genres'] = $this->match_all('/<a.*?>(.*?)<\/a>/ms', $this->match('/Genres<\/td>.*?<td>(.*?)<\/td>/ms', $html, 1), 1);
