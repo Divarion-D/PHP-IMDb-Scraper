@@ -201,7 +201,7 @@ class Imdb
 	//************************[ Extra Functions ]******************************
 
 	// Movie title search on Google, Bing or Ask. If search fails, return FALSE.
-	function getIMDbIdFromSearch($title, $engine = "google"){
+	private function getIMDbIdFromSearch($title, $engine = "google"){
 		switch ($engine) {
 			case "google":  $nextEngine = "bing";  break;
 			case "bing":    $nextEngine = "ask";   break;
