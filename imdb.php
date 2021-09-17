@@ -201,7 +201,7 @@ class Imdb
 	//************************[ Extra Functions ]******************************
 
 	// Movie title search on Google, Bing or Ask. If search fails, return FALSE.
-	private function getIMDbIdFromSearch($title, $engine = "google"){
+	function getIMDbIdFromSearch($title, $engine = "google"){
 		switch ($engine) {
 			case "google":  $nextEngine = "bing";  break;
 			case "bing":    $nextEngine = "ask";   break;
@@ -210,7 +210,7 @@ class Imdb
 			default:        return NULL;
 		}
 		$url = "https://www.${engine}.com/search?q=imdb+" . rawurlencode($title);
-		$ids = $this->match_all('/<a.*?href="https?:\/\/www.imdb.com\/title\/(tt\d+).*?".*?>.*?<\/a>/ms', $this->geturl($url), 1);
+		$ids = $this->match_all('/<a.*?href="\/url\?q=https?:\/\/www.imdb.com\/title\/(tt\d+).*?".*?>.*?<\/a>/ms', $this->geturl($url), 1);
 		if (!isset($ids[0]) || empty($ids[0])) //if search failed
 			return $this->getIMDbIdFromSearch($title, $nextEngine); //move to next search engine
 		else

@@ -11,17 +11,18 @@ if(isset($_GET["moviename"]) | isset($_GET["movieid"])) {
 	$i = new Imdb();
 	$mArr = [];
 	if($movieId !== '') {
-		$mArr = array_change_key_case($i->getMovieInfoById($movieId), CASE_UPPER);
+		$mArr = $i->getMovieInfoById($movieId);
 	} else if($movieName !== '') {
-		$mArr = array_change_key_case($i->getMovieInfo($movieName), CASE_UPPER);
+		$mArr = $i->getMovieInfo($movieName);
     } else if($movieUrl !== '') {
-        $mArr = array_change_key_case($i->getMovieInfoByURL($movieUrl), CASE_UPPER);
+        $mArr = $i->getMovieInfoByURL($movieUrl);
 	} else {
 		echo 'Please give either a moviename or movieid';
 	}
 
 	///////////////[ XML Output ]/////////////////
 	if($output == "xml") {
+	    $mArr = array_change_key_case($mArr, CASE_UPPER);
 		header("Content-Type: text/xml");
 		$doc = new DomDocument('1.0');
 		$doc->formatOutput = true;
